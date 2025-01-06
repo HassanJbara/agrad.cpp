@@ -111,7 +111,7 @@ for (int i = 0; i < EPOCHS; i++)
 }
 ```
 
-**Important:** As this is a crude implementation, the training process isn't optimized for stability or speed. This makes it highly prone to changes in the hyperparameters and initialization, or other problems such as vanishing/exploding gradients. Therefore, even if you encounter weird behavior when running the example, just running it again might give you better results. That being said, the provided example (using tanh activations) with the default hyperparameters should work fine.
+***Important:*** As this is a basic implementation, the training process isn't optimized for stability or speed. This makes it highly prone to changes in the hyperparameters and initialization, or other problems such as vanishing/exploding gradients. Therefore, even if you encounter weird behavior when running the example, just running it again might give you better results. That being said, the provided example (using tanh activations) with the default hyperparameters should work fine.
 
 ### Tests
 

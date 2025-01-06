@@ -7,6 +7,7 @@ graphs/
 venv/
 data/*.csv
 data/*.png
+!data/graph.png
 data/*.txt
 data/*.json
 data/*.jpg

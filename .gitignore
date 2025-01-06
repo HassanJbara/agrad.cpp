@@ -1,0 +1,15 @@
+*.exe
+*.a
+*.o
+build/
+testing/
+graphs/
+venv/
+data/*.csv
+data/*.png
+data/*.txt
+data/*.json
+data/*.jpg
+!data/requirements.txt
+.DS_Store
+tmp.cpp

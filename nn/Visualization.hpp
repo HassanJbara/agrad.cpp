@@ -198,54 +198,16 @@ public:
 
     static void visualize_with_decision_boundary(
         const Dataset &dataset,
-        const std::function<double(const std::vector<double> &)> &predict_fn,
+        const std::function<int(double, double)> &classifier,
         const std::string &title = "Decision Boundary Visualization")
     {
-        // Find data ranges
-        double x1_min = std::numeric_limits<double>::max();
-        double x1_max = std::numeric_limits<double>::lowest();
-        double x2_min = std::numeric_limits<double>::max();
-        double x2_max = std::numeric_limits<double>::lowest();
-
-        for (const auto &x : dataset.X)
-        {
-            x1_min = std::min(x1_min, x[0]);
-            x1_max = std::max(x1_max, x[0]);
-            x2_min = std::min(x2_min, x[1]);
-            x2_max = std::max(x2_max, x[1]);
-        }
-
-        // Add padding
-        double padding = 0.1;
-        x1_min -= padding * (x1_max - x1_min);
-        x1_max += padding * (x1_max - x1_min);
-        x2_min -= padding * (x2_max - x2_min);
-        x2_max += padding * (x2_max - x2_min);
-
-        // Create mesh grid
-        const int n_points = 100;
-        std::vector<std::vector<double>> X(n_points, std::vector<double>(n_points));
-        std::vector<std::vector<double>> Y(n_points, std::vector<double>(n_points));
-        std::vector<std::vector<double>> Z(n_points, std::vector<double>(n_points));
-
-        for (int i = 0; i < n_points; i++)
-        {
-            for (int j = 0; j < n_points; j++)
-            {
-                X[i][j] = x1_min + (x1_max - x1_min) * i / (n_points - 1);
-                Y[i][j] = x2_min + (x2_max - x2_min) * j / (n_points - 1);
-                std::vector<double> point = {X[i][j], Y[i][j]};
-                Z[i][j] = predict_fn(point);
-            }
-        }
-
         // Create figure
         auto f = matplot::figure(true);
         f->size(1200, 800);
 
         // Plot decision boundary contour
-        auto c = matplot::contour(X, Y, Z);
-        c->line_width(2);
+        auto c = matplot::fcontour(classifier, "b")->filled(true).line_width(0.5);
+        matplot::colormap({{1.0, 0.8, 0.8}, {0.9, 1.0, 0.9}});
 
         matplot::hold(matplot::on);
 
@@ -267,21 +229,14 @@ public:
             }
         }
 
-        auto s1 = matplot::scatter(x1_pos, x2_pos);
-        s1->marker_color({1, 0, 0});
-        s1->marker_size(10);
-        s1->display_name("Class +1");
-
-        auto s2 = matplot::scatter(x1_neg, x2_neg);
-        s2->marker_color({0, 0, 1});
-        s2->marker_size(10);
-        s2->display_name("Class -1");
+        matplot::scatter(x1_pos, x2_pos)->marker_color({1, 0, 0}).marker_face(true).display_name("Class +1");
+        matplot::scatter(x1_neg, x2_neg)->marker_color({0, 0, 1}).marker_face(true).display_name("Class -1");
 
         // Customize the plot
         matplot::title(title);
         matplot::xlabel("Feature X1");
         matplot::ylabel("Feature X2");
-        matplot::legend();
+        matplot::colorbar(matplot::off);
         matplot::grid(matplot::on);
 
         // Show the plot

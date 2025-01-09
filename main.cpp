@@ -33,26 +33,19 @@ int main()
 
         for (int j = 0; j < training_batches; j++)
         {
-            std::vector<sample> batch_samples;
-            for (int z = 0; z < BATCH_SIZE; z++)
-            {
-                batch_samples.push_back({train_dataset.X[j * BATCH_SIZE + z], train_dataset.y[j * BATCH_SIZE + z]});
-            }
+            std::vector<std::vector<double>> batch_samples_x(train_dataset.X.begin() + (j * BATCH_SIZE), train_dataset.X.begin() + (j * BATCH_SIZE) + BATCH_SIZE);
+            std::vector<double> batch_samples_y(train_dataset.y.begin() + (j * BATCH_SIZE), train_dataset.y.begin() + (j * BATCH_SIZE) + BATCH_SIZE);
 
             // Forward pass
-            std::vector<Value::ValuePtr> y_pred;
-            for (auto &sample : batch_samples)
-            {
-                y_pred.push_back(model(sample.x)[0]);
-            }
+            auto y_pred = model(batch_samples_x);
 
             // Compute loss and accuracy
             Value::ValuePtr loss = Value::create(0.0);
 
             for (size_t z = 0; z < BATCH_SIZE; z++)
             {
-                loss = loss + (y_pred[z] - Value::create(batch_samples[z].y))->pow(2);
-                accuracy += (y_pred[z]->getData() > 0.5) == (batch_samples[z].y == 1);
+                loss = loss + (y_pred[z] - Value::create(batch_samples_y[z]))->pow(2);
+                accuracy += (y_pred[z]->getData() > 0.5) == (batch_samples_y[z] == 1);
             }
 
             // Backward pass
@@ -103,9 +96,9 @@ int main()
     }
 
     // Visualize the decision boundary
-    auto predict_fn = [&model](const std::vector<double> &x)
+    auto predict_fn = [&model](double x1, double x2) -> int
     {
-        return model(x)[0]->getData() > 0;
+        return model({x1, x2})[0]->getData() > 0;
     };
 
     DatasetVisualizer::visualize_with_decision_boundary(dataset, predict_fn);

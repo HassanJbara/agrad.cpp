@@ -64,7 +64,7 @@ public:
         return os;
     }
 
-    Value::ValuePtr operator()(std::vector<Value::ValuePtr> x) // must return pointer to output for backprop to work
+    Value::ValuePtr operator()(std::vector<Value::ValuePtr> x)
     {
         if (x.size() != inputs)
         {

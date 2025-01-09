@@ -73,6 +73,30 @@ public:
         return current;
     }
 
+    std::vector<Value::ValuePtr> operator()(std::vector<std::vector<double>> x)
+    {
+        std::vector<Value::ValuePtr> output;
+        for (int i = 0; i < x.size(); i++)
+        {
+            auto current = operator()(x[i]);
+            output.insert(output.end(), current.begin(), current.end());
+        }
+
+        return output;
+    }
+
+    std::vector<Value::ValuePtr> operator()(std::vector<std::vector<Value::ValuePtr>> x)
+    {
+        std::vector<Value::ValuePtr> output;
+        for (int i = 0; i < x.size(); i++)
+        {
+            auto current = operator()(x[i]);
+            output.insert(output.end(), current.begin(), current.end());
+        }
+
+        return output;
+    }
+
     friend std::ostream &operator<<(std::ostream &os, const MLP &mlp)
     {
         os << "MLP of [";

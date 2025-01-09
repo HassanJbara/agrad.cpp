@@ -66,6 +66,7 @@ public:
         }
         return out;
     }
+
     friend std::ostream &operator<<(std::ostream &os, const Layer &layer)
     {
         os << "Layer of [";

@@ -27,11 +27,10 @@ if(NOT matplotplusplus_POPULATED)
     add_subdirectory(${matplotplusplus_SOURCE_DIR} ${matplotplusplus_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
 
+# Add OpenMP
+find_package(OpenMP REQUIRED)
 
 # Add source files and create static libraries
-# add_library(lina STATIC lina/lina.cpp)
-# add_library(matrix STATIC lina/Matrix.cpp)
-# add_library(numeria STATIC numeria/numeria.cpp)
 add_library(agrad STATIC agrad/Value.cpp)
 
 # Add the executable
@@ -39,7 +38,15 @@ add_executable(main main.cpp)
 add_executable(tmp tmp.cpp)
 
 target_link_libraries(main agrad matplot)
-target_link_libraries(tmp agrad matplot)
+
+if (OpenMP_CXX_FOUND)
+    target_compile_options(tmp PRIVATE ${OpenMP_CXX_FLAGS})
+    target_link_options(tmp PRIVATE ${OpenMP_CXX_FLAGS})
+    target_link_libraries(tmp PRIVATE ${OpenMP_CXX_LIBRARIES} agrad matplot)
+else()
+    message(FATAL_ERROR "OpenMP not found!")
+endif()
+
 
 # Custom target for cleaning up build files
 add_custom_target(deep_clean

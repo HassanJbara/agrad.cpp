@@ -93,6 +93,8 @@
     "numbers": "cpp",
     "semaphore": "cpp",
     "shared_mutex": "cpp",
-    "numeric": "cpp"
+    "numeric": "cpp",
+    "cinttypes": "cpp",
+    "codecvt": "cpp"
   }
 }

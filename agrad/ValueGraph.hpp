@@ -95,7 +95,7 @@ public:
         out << dot.str();
         out.close();
 
-        system(("dot -Tpng " + output_dir + filename + " -o " + output_dir + filename + ".png").c_str());
+        system(("dot -Tpng -Gdpi=300 " + output_dir + filename + " -o " + output_dir + filename + ".png").c_str());
         // remove the .dot file
         remove((output_dir + filename).c_str());
     }

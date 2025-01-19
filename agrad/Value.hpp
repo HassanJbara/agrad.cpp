@@ -3,6 +3,8 @@
 #include <cmath>
 #include <vector>
 #include <memory>
+#include <functional>
+#include <set>
 
 class Value : public std::enable_shared_from_this<Value>
 {
@@ -17,6 +19,18 @@ private:
     std::string label;
     std::string _op;
     void appendChild(ValuePtr a) { children.push_back(a); }
+    void build_topo(ValuePtr v, std::set<ValuePtr> &visited, std::vector<ValuePtr> &topo)
+    {
+        if (visited.find(v) == visited.end())
+        {
+            visited.insert(v);
+            for (ValuePtr child : v->children)
+            {
+                build_topo(child, visited, topo);
+            }
+            topo.push_back(v);
+        }
+    }
 
 public:
     Value() : data(0.0), grad(0.0), label(""), _op("") {}

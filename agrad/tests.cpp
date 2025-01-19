@@ -276,3 +276,17 @@ TEST_F(ValueTest, Children)
     EXPECT_DOUBLE_EQ(children[0]->getData(), 1.0);
     EXPECT_DOUBLE_EQ(children[1]->getData(), 2.0);
 }
+
+TEST_F(ValueTest, TopologicalGradient)
+{
+    ValuePtr a = v0 * v1;
+    ValuePtr b = a * v1;
+    ValuePtr result = a + b;
+
+    result->backward();
+    EXPECT_DOUBLE_EQ(v0->getGrad(), 2.0);
+    EXPECT_DOUBLE_EQ(v1->getGrad(), 0.0);
+    EXPECT_DOUBLE_EQ(a->getGrad(), 2.0);
+    EXPECT_DOUBLE_EQ(b->getGrad(), 1.0);
+    EXPECT_DOUBLE_EQ(result->getData(), 0.0);
+}

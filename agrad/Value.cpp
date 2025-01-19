@@ -75,14 +75,17 @@ std::vector<std::shared_ptr<Value>> Value::AllChildren()
 void Value::backward()
 {
     grad = 1.0;
-    _backward();
 
-    auto childs = AllChildren();
-    for (auto v : childs)
+    std::set<ValuePtr> visited;
+    std::vector<ValuePtr> topo;
+    build_topo(shared_from_this(), visited, topo);
+
+    // Process in reverse order
+    for (auto it = topo.rbegin(); it != topo.rend(); ++it)
     {
-        if (v->_backward)
+        if ((*it)->_backward)
         {
-            v->_backward();
+            (*it)->_backward();
         }
     }
 }
